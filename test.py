@@ -1,49 +1,27 @@
-import os
-import json
-import uuid
-import hmac
-import hashlib
-import requests
+import os, requests
 from dotenv import load_dotenv
 
-# Load biến từ file .env
 load_dotenv()
+BOT_TOKEN = os.getenv("FPT_SECRET_KEY")      # bot token copy từ console
+BOT_CODE  = os.getenv("FPT_BOT_CODE")        # ví dụ "01JZA4PCXJ1WZBAQ1PJZ0BFAJ6"
+API_URL   = "https://bot.fpt.ai/api/get_answer/"
 
-SECRET_KEY = os.getenv("FPT_SECRET_KEY")
-BROKER_ID = os.getenv("FPT_BROKER_ID")
-WEBHOOK_URL = "https://agents.fpt.ai/indirect-channels/webhook/api"  # luôn là URL này
-
-def generate_signature(secret_key: str, body: str) -> str:
-    hmac_digest = hmac.new(
-        key=secret_key.encode("utf-8"),
-        msg=body.encode("utf-8"),
-        digestmod=hashlib.sha256
-    ).hexdigest()
-    return f"sha256={hmac_digest}"
-
-def send_test_message(text: str):
-    message_payload = {
-        "sender_id": "test_user_123",
-        "sender_name": "Phúc",
-        "broker_id": BROKER_ID,
-        "message": {
-            "mid": str(uuid.uuid4()),
-            "text": text
-        }
+def get_bot_reply(user_text):
+    payload = {
+        "channel": "api",
+        "app_code": BOT_CODE,
+        "sender_id": "user_123",
+        "type": "text",
+        "message": {"type": "text", "content": user_text}
     }
-
-    body_json = json.dumps(message_payload, ensure_ascii=False)
-    signature = generate_signature(SECRET_KEY, body_json)
-
     headers = {
-        "Content-Type": "application/json",
-        "X-Hub-Signature-256": signature
+        "Authorization": f"Bearer {BOT_TOKEN}",
+        "Content-Type": "application/json"
     }
+    resp = requests.post(API_URL, json=payload, headers=headers, timeout=10)
+    resp.raise_for_status()
+    data = resp.json()
+    return data.get("data", {}).get("answer", "🤔 Bot không trả lời được")
 
-    response = requests.post(WEBHOOK_URL, headers=headers, data=body_json)
-
-    print(f"[STATUS] {response.status_code}")
-    print(f"[RESPONSE] {response.text}")
-
-if __name__ == "__main__":
-    send_test_message("xin chào")  # Thay đổi nội dung message ở đây nếu muốn
+# Thử nghiệm
+print(get_bot_reply("Xin chào"))
