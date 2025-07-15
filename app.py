@@ -66,7 +66,7 @@ def chat():
         logging.exception("[ERROR] Failed to call FPT AI webhook")
         return jsonify({"error": "Unable to connect to FPT AI"}), 500
 
-    return jsonify({"reply": "✅ Message sent, awaiting reply at webhook"}), 200
+    return jsonify({"reply": "Message sent, awaiting reply at webhook"}), 200
 
 @app.route("/indirect-channels/webhook/api", methods=["GET"])
 def verify_webhook():
