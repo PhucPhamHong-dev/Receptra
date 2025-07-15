@@ -2,124 +2,112 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Chatbot Bệnh viện</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RECEPTRA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    html, body { height: 100%; margin: 0; }
     body { font-family: 'Be Vietnam Pro', sans-serif; }
   </style>
 </head>
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4">
-  <div class="max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
+<body class="bg-gray-50 flex flex-col h-full">
+  <!-- Wrapper full screen -->
+  <div class="flex flex-col flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
     <!-- Header -->
     <div class="p-6 bg-red-600 text-white">
       <h1 class="text-2xl font-semibold">Receptra xin chào 👋</h1>
       <p>Bạn cần hỗ trợ gì hôm nay?</p>
     </div>
 
-    <!-- Prompt mẫu -->
-    <div class="p-4 space-y-2">
-      <div class="flex flex-wrap gap-2">
-        <button class="prompt-card px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
-                data-prompt="🏥 Tôi muốn đặt lịch khám.">Đặt lịch khám</button>
-        <button class="prompt-card px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
-                data-prompt="⌚ Giờ làm việc của bệnh viện là?">Giờ làm việc</button>
-        <button class="prompt-card px-4 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200"
-                data-prompt="🔎 Tôi muốn tìm khoa nội thần kinh.">Tìm khoa phòng</button>
-      </div>
-    </div>
-
-    <!-- Khung chat -->
-    <div id="chat-window" class="p-4 h-64 overflow-y-auto space-y-3 bg-white"></div>
+    <!-- Chat area -->
+    <div id="chat-window" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-100"></div>
 
     <!-- Typing indicator -->
-    <div id="typing-indicator" class="px-4 py-2 text-gray-500 italic hidden">
-      Bot đang nhập...
-    </div>
+    <div id="typing-indicator" class="px-4 py-2 text-gray-500 italic hidden">Bot đang nhập...</div>
 
-    <!-- Input -->
-    <div class="p-4 border-t">
+    <!-- Input area -->
+    <div class="p-4 border-t bg-white">
       <div class="flex gap-2">
         <input id="user-input" type="text" placeholder="Nhập câu hỏi..."
                class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
-        <button id="send-btn"
-                class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-          Send
-        </button>
+        <button id="send-btn" class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Send</button>
       </div>
     </div>
   </div>
 
   <script>
-    const chatWindow = document.getElementById("chat-window");
-    const inputEl    = document.getElementById("user-input");
-    const sendBtn    = document.getElementById("send-btn");
-    const typingEl   = document.getElementById("typing-indicator");
-    const prompts    = document.querySelectorAll(".prompt-card");
+    document.addEventListener("DOMContentLoaded", () => {
+      const chatWindow = document.getElementById("chat-window");
+      const typingEl = document.getElementById("typing-indicator");
+      const inputEl = document.getElementById("user-input");
+      const sendBtn = document.getElementById("send-btn");
 
-    // 1. Click prompt => gán vào input
-    prompts.forEach(btn =>
-      btn.addEventListener("click", () => {
-        inputEl.value = btn.dataset.prompt;
-        inputEl.focus();
-      })
-    );
-
-    // 2. Gửi tin nhắn người dùng
-    sendBtn.addEventListener("click", async () => {
-      const text = inputEl.value.trim();
-      if (!text) return;
-
-      // Hiển thị tin người dùng
-      const userDiv = document.createElement("div");
-      userDiv.className = "text-right text-gray-800";
-      userDiv.innerHTML = `<span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-lg">${text}</span>`;
-      chatWindow.appendChild(userDiv);
-
-      inputEl.value = "";
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-
-      // Hiển thị typing
+      // Initial typing
       typingEl.classList.remove("hidden");
-
-      // Gọi API Flask
-      try {
-        const res = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text })
-        });
-        await res.json(); // Không cần `reply`, vì sẽ lấy sau qua polling
+      setTimeout(() => {
         typingEl.classList.add("hidden");
-      } catch (err) {
-        typingEl.classList.add("hidden");
-        console.error("Lỗi khi gọi /chat:", err);
-      }
-    });
+        const wrapper = document.createElement("div");
+        wrapper.className = " w-fit bg-white p-4 rounded-lg shadow space-y-4 mx-4";
+        wrapper.innerHTML = `
+          <div class="space-y-2 text-left">
+            <div class="inline-block bg-gray-100 px-4 py-2 rounded-lg">
+              Xin chào! Tôi là Receptra, lễ tân ảo & hướng dẫn viên cho bệnh nhân Bệnh viện Bạch Mai.<br>
+              Tôi có thể giúp gì cho bạn hôm nay?
+            </div>
+          </div>
+          <div class="flex flex-col gap-2 ">
+            <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                    data-prompt="Tôi cần làm thủ tục BHYT, cần chuẩn bị gì?">Tôi cần làm thủ tục BHYT, cần chuẩn bị gì?</button>
+            <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                    data-prompt="Tôi choáng váng và muốn ngất, tôi phải làm sao?">Tôi choáng váng và muốn ngất, tôi phải làm sao?</button>
+            <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                    data-prompt="Tôi bị đau đầu thường xuyên, xin cho biết tôi nên đến khoa nào? ">Tôi bị đau đầu thường xuyên, xin cho biết tôi nên đến khoa nào?  </button>
+          </div>`;
+        chatWindow.appendChild(wrapper);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        wrapper.querySelectorAll(".prompt-card").forEach(btn => btn.addEventListener("click", () => {
+          inputEl.value = btn.dataset.prompt;
+          inputEl.focus();
+        }));
+      }, 2000);
 
-    // Cho phép Enter để gửi
-    inputEl.addEventListener("keyup", e => {
-      if (e.key === "Enter") sendBtn.click();
-    });
+      const sendMessage = async () => {
+        const text = inputEl.value.trim(); if (!text) return;
+        const userDiv = document.createElement("div");
+        userDiv.className = "text-right";
+        userDiv.innerHTML = `<span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-lg">${text}</span>`;
+        chatWindow.appendChild(userDiv);
+        inputEl.value = '';
+        chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // 3. Polling /latest-reply mỗi 2 giây
-    setInterval(async () => {
-      try {
-        const res = await fetch("/latest-reply");
-        const data = await res.json();
-        if (data.reply) {
+        typingEl.classList.remove("hidden");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        try {
+          await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+          let reply = '';
+          while (!reply) {
+            const resp = await fetch("/latest-reply");
+            const data = await resp.json(); reply = data.reply || '';
+            if (!reply) await new Promise(r => setTimeout(r, 500));
+          }
+          typingEl.classList.add("hidden");
           const botDiv = document.createElement("div");
-          botDiv.className = "text-left text-gray-900";
-          botDiv.innerHTML = `<span class="inline-block bg-gray-100 px-3 py-1 rounded-lg">${data.reply}</span>`;
+          botDiv.className = "text-left my-2";
+          botDiv.innerHTML = `<div class="inline-block bg-white bg-opacity-100 px-4 py-2 rounded-lg shadow mx-4">${reply}</div>`;
           chatWindow.appendChild(botDiv);
           chatWindow.scrollTop = chatWindow.scrollHeight;
+        } catch (err) {
+          typingEl.classList.add("hidden"); console.error("Gửi /chat lỗi:", err);
         }
-      } catch (e) {
-        console.error("Lỗi khi fetch phản hồi:", e);
-      }
-    }, 2000);
+      };
+
+      sendBtn.addEventListener("click", sendMessage);
+      inputEl.addEventListener("keyup", e => { if (e.key === "Enter") sendMessage(); });
+    });
   </script>
 </body>
 </html>
