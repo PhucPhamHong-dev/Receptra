@@ -1,4 +1,4 @@
-# Receptra
+# Receptra.
 
 **Virtual Receptionist & Patient Guide for Healthcare Facilities**
 
