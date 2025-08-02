@@ -1,180 +1,151 @@
-Receptra
+# Receptra
 
-Virtual Receptionist & Patient Guide for Healthcare Facilities
+**Virtual Receptionist & Patient Guide for Healthcare Facilities**
 
-Receptra is a scalable, Flask-based virtual assistant designed to enhance patient experiences at hospitals and clinics. It offers intuitive navigation, appointment handling, and responsive emergency guidance—all through a friendly chat interface.
+Receptra is a Flask-based virtual assistant designed to enhance patient interactions in hospitals and clinics. It delivers a warm welcome, handles common inquiries, provides wayfinding assistance, and routes messages to an AI-powered backend for further help.
 
-📋 Table of Contents
+---
 
-Features
+## 📌 Table of Contents
 
-Demo
+1. [🚀 Features](#-features)  
+2. [🏁 Quick Start](#-quick-start)  
+   - [Prerequisites](#prerequisites)  
+   - [Installation](#installation)  
+   - [Configuration](#configuration)  
+   - [Running the Application](#running-the-application)  
+3. [🗂️ Project Structure](#️-project-structure)  
+4. [🔌 API & Webhook Integration](#-api--webhook-integration)  
+5. [🛣️ Application Routes](#️-application-routes)  
+6. [🤝 Contributing](#-contributing)  
+7. [📄 License](#-license)  
+8. [📚 References](#-references)
 
-Prerequisites
+---
 
-Installation
+## 🚀 Features
 
-Configuration
+- **Warm Welcome & First Contact**  
+  Every conversation begins with a polite greeting, setting a tone of trust and clarity about patient needs.
 
-Running the Application
+- **Hospital Wayfinding & Navigation Support**  
+  Patients receive clear directions to departments, clinics, and essential hospital facilities to minimize confusion.
 
-Project Structure
+- **Appointment Booking & Management**  
+  Seamless flows for scheduling, rescheduling, or canceling appointments via intuitive prompts.
 
-API & Webhook Endpoints
+- **Emergency Guidance Protocol**  
+  Detects critical keywords (e.g., *chest pain*, *severe bleeding*) and provides immediate advice to contact emergency services.
 
-Available Routes
+- **FAQs & Operational Info**  
+  Provides details on opening hours, on-duty physicians, visitor policies, and more in clear, user-friendly language.
 
-Contributing
+- **Inclusive & Sensitive Communication**  
+  Uses neutral, culturally aware language designed for accessibility across all patient backgrounds.
 
-License
+---
 
-Acknowledgements
+## 🏁 Quick Start
 
-✨ Features
+### Prerequisites
 
-Warm Welcome & Greeting: Builds rapport by greeting patients and capturing initial context.
+- **Python 3.9 or newer**  
+- *(Optional)* Virtual environment to isolate project dependencies
 
-Hospital Navigation & Wayfinding: Provides step-by-step directions to departments and services.
+### Installation
 
-Appointment Management: Enables booking, rescheduling, and cancellations via simple commands.
-
-Emergency Response Guidance: Detects critical phrases (e.g., chest pain) and prompts immediate emergency protocols.
-
-Information & FAQs: Answers common queries about hours, physicians, and policies.
-
-Inclusive Communication: Ensures culturally sensitive and accessible dialogue.
-
-🎬 Demo
-
-Coming soon: Link to live demo or screencast.
-
-🔧 Prerequisites
-
-Python: 3.9 or higher
-
-Virtual Environment (optional but recommended): venv or virtualenv
-
-🚀 Installation
-
-Clone repository
-
+```bash
 git clone <repository-url>
 cd Receptra
+python3 -m venv .venv
+# Activate the virtual environment:
+#   macOS / Linux: source .venv/bin/activate
+#   Windows: .venv\Scripts\activate
+pip install flask requests python-dotenv markdown
+```
 
-Create & activate virtual environment
+### Configuration
 
-python -m venv .venv
-source .venv/bin/activate    # Linux/macOS
-.\.venv\Scripts\activate   # Windows
+Create a `.env` file based on `.env.example` and populate with your FPT AI webhook credentials:
 
-Install dependencies
+```env
+FPT_WEBHOOK_SECRET=...
+FPT_APP_TOKEN=...
+FPT_WEBHOOK_URL=...
+FPT_VERIFY_TOKEN=...
+FPT_BROKER_ID=...
+FPT_APP_CODE=...
+FPT_TENANT_ID=...
+```
 
-pip install -r requirements.txt
+### Running the Application
 
-⚙️ Configuration
-
-Copy example environment file:
-
-cp .env.example .env
-
-Open .env and populate:
-
-FPT_WEBHOOK_SECRET=your_webhook_secret
-FPT_APP_TOKEN=your_app_token
-FPT_WEBHOOK_URL=your_webhook_url
-FPT_VERIFY_TOKEN=your_verify_token
-FPT_BROKER_ID=your_broker_id
-FPT_APP_CODE=your_app_code
-FPT_TENANT_ID=your_tenant_id
-
-▶️ Running the Application
-
-Start the server:
-
+```bash
 python app.py
+```
 
-Visit http://localhost:3000/homepage in your browser.
+Access the interface in a browser:
 
-🗂️ Project Structure
+- **Landing page:** `http://localhost:3000/homepage`  
+- **Chat interface:** `/chat`
 
+---
+
+## 🗂️ Project Structure
+
+```
 Receptra/
-├── app.py               # Main Flask server
-├── requirements.txt     # Dependency list
-├── .env.example         # Sample environment variables
-├── static/              # Static assets
-│   ├── css/             # Stylesheets
-│   └── img/             # Logo & backgrounds
-└── templates/           # Jinja2 templates
-    ├── homepage.html    # Landing page
-    ├── chatbot.html     # Chat UI
-    ├── services.html    # Services overview
-    ├── about.html       # About page
-    └── ourteam.html     # Team page
+├── app.py                 # Flask server & webhook handling
+├── .env.example           # Sample environment variable template
+├── static/                # Static files (CSS, images, etc.)
+│   ├── css/
+│   │   ├── body.css
+│   │   └── header.css
+│   └── img/               # Logos & background assets
+└── templates/             # HTML templates
+    ├── homepage.html      # Main landing page
+    ├── chatbot.html       # Chatbot UI
+    ├── services.html      # Overview of services
+    ├── about.html         # Project description
+    └── ourteam.html       # Team bios
+```
 
-🔗 API & Webhook Endpoints
+---
 
-Method
+## 🔌 API & Webhook Integration
 
-Endpoint
+- `POST /chat-api`  
+  Proxies user messages to the FPT AI webhook, signed with HMAC SHA‑256. Returns a temporary placeholder while awaiting the webhook callback.  
+- `GET /indirect-channels/webhook/api`  
+  Handles verification requests from FPT AI.  
+- `POST /indirect-channels/webhook/api`  
+  Receives and processes webhook callbacks, storing the latest bot response retrievable by `GET /latest-reply`.
 
-Description
+---
 
-POST
+## 🛣️ Application Routes
 
-/chat-api
+| Endpoint        | Description                                         |
+|------------------|-----------------------------------------------------|
+| `/homepage`      | Landing page with navigation links                 |
+| `/chat`          | Interactive chatbot UI (with prompt cards)         |
+| `/services`      | Overview of hospital services                       |
+| `/about`         | Background information about the project            |
+| `/ourteam`       | Team member profiles and contact details            |
 
-Forward user messages with HMAC verification
+---
 
-GET
+## 🤝 Contributing
 
-/indirect-channels/webhook/api
+We welcome contributions! To get involved:
 
-Verify webhook challenges
+1. Fork the repository  
+2. Create a feature branch: `git checkout -b feature/YourFeature`  
+3. Implement your changes and commit them  
+4. Push to your fork and open a Pull Request  
 
-POST
+---
 
-/indirect-channels/webhook/api
-
-Receive & process FPT webhook callbacks
-
-GET
-
-/latest-reply
-
-Fetch the latest bot response from webhook storage
-
-🌐 Available Routes
-
-/homepage  — Landing page
-
-/chat      — Chat interface
-
-/services  — List of hospital services
-
-/about     — Project background
-
-/ourteam   — Team member details
-
-🤝 Contributing
-
-We welcome contributions! Please follow:
-
-Fork the repo
-
-Create branch feature/YourFeature
-
-Commit changes: git commit -m "Add feature"
-
-Push & open a PR
-
-Refer to CONTRIBUTING.md for guidelines.
-
-📜 License
+## 📄 License
 
 © 2025 Receptra Team. All rights reserved.
-
-🙏 Acknowledgements
-
-Built with Flask
-
-Powered by FPT AI services
