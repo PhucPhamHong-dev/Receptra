@@ -7,6 +7,7 @@ import logging
 import requests
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
+from markdown import markdown
 
 # Load environment variables from .env
 load_dotenv()
@@ -65,7 +66,8 @@ def chat():
     except Exception:
         logging.exception("[ERROR] Failed to call FPT AI webhook")
         return jsonify({"error": "Unable to connect to FPT AI"}), 500
-
+    global last_bot_reply
+    last_bot_reply = {"reply": ""}
     return jsonify({"reply": "Message sent, awaiting reply at webhook"}), 200
 
 @app.route("/indirect-channels/webhook/api", methods=["GET"])
@@ -97,10 +99,11 @@ def receive_webhook():
     data = request.get_json(force=True)
     payload = data.get("payload", {})
     if "text" in payload:
-        content = payload["text"].get("content", "")
-        app.logger.info(f"[BOT REPLY] {content}")
+        raw_md = payload["text"].get("content", "")
+        content_html = markdown(raw_md, extensions=['extra', 'sane_lists'])
+        app.logger.info(f"[BOT REPLY - HTML] {content_html}")
         global last_bot_reply
-        last_bot_reply = {"reply": content}
+        last_bot_reply = {"reply": content_html}
 
     return "OK", 200
 
