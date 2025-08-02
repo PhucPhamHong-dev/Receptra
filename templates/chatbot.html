@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RECEPTRA</title>
+  <title>Receptra</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body { height: 100%; margin: 0; }
@@ -164,7 +164,7 @@
         inputEl.value = '';
 
         try {
-          await fetch('/chat', {
+          await fetch('/chat-api', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })

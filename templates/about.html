@@ -2,21 +2,21 @@
 <html lang="vi">
 <head>
     <title>About | Receptra Hospital Chatbot</title>
-    <link rel="stylesheet" href="styles/body.css">
-    <link rel="stylesheet" href="styles/header.css">
-    <link rel="stylesheet" href="styles/image.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/body.css') }}?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/image.css') }}?v=2">
 </head>
-<body>
+<body <body style="background: url('{{ url_for('static', filename='img/hallway.jpg') }}') no-repeat center center fixed; background-size: cover;"></body>>
     <div class="header">
         <div class="left-section">
-            <button class="logo-title" onclick="window.location.href='homepage.html'">
+            <button class="logo-title" onclick="window.location.href='homepage'">
                 RECEPTRA
             </button>
         </div>
         <div class="right-section">
-            <button class="About" onclick="window.location.href='about.html'">ABOUT</button>
-            <button class="Services" onclick="window.location.href='services.html'">SERVICES</button>
-            <button class="Our-team" onclick="window.location.href='ourteam.html'">OUR TEAM</button>
+            <button class="About" onclick="window.location.href='about'">ABOUT</button>
+            <button class="Services" onclick="window.location.href='services'">SERVICES</button>
+            <button class="Our-team" onclick="window.location.href='ourteam'">OUR TEAM</button>
         </div>
     </div>
     <div class="main2">

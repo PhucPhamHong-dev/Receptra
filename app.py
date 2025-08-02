@@ -8,7 +8,7 @@ import requests
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
 from markdown import markdown
-
+from flask import Flask, render_template, redirect, url_for
 # Load environment variables from .env
 load_dotenv()
 SECRET_KEY = os.getenv("FPT_WEBHOOK_SECRET")
@@ -22,16 +22,19 @@ logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(m
 
 # Temporary storage for bot replies
 last_bot_reply = {}
+@app.route("/")
+def root():
+    return redirect(url_for("homepage"))
+@app.route("/homepage", methods=["GET"])
+def homepage():
+    return render_template("homepage.html")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    """Main page handler. Allows only GET request."""
-    if request.method == "POST":
-        return "POST not allowed here", 405
-    return render_template("index.html")
+@app.route("/chat", methods=["GET"])
+def chat_page():
+    return render_template("chatbot.html")
 
-@app.route("/chat", methods=["POST"])
-def chat():
+@app.route("/chat-api", methods=["POST"])
+def chat_api():
     """Handles incoming user messages and forwards them to the FPT webhook."""
     user_msg = request.json.get("message", "").strip()
     logging.debug(f"[RECEIVE] User message: {user_msg}")
@@ -106,7 +109,15 @@ def receive_webhook():
         last_bot_reply = {"reply": content_html}
 
     return "OK", 200
-
+@app.route("/services")
+def services():
+    return render_template("services.html")
+@app.route("/about")
+def about():
+    return render_template("about.html")
+@app.route("/ourteam")
+def ourteam():
+    return render_template("ourteam.html")
 @app.route("/latest-reply")
 def get_latest():
     """Returns the latest reply received from the bot."""
