@@ -1,103 +1,180 @@
-# Receptra
+Receptra
 
-**Virtual Receptionist & Patient Guide for Healthcare Facilities**
+Virtual Receptionist & Patient Guide for Healthcare Facilities
 
-Receptra is a sophisticated virtual assistant designed to optimize patient experience and streamline operations in hospitals and clinics. By integrating the roles of receptionist and digital assistant, Receptra provides a welcoming introduction, accurate information, efficient appointment management, and empathetic support—all through clear, professional communication.
+Receptra is a scalable, Flask-based virtual assistant designed to enhance patient experiences at hospitals and clinics. It offers intuitive navigation, appointment handling, and responsive emergency guidance—all through a friendly chat interface.
 
-## Features
+📋 Table of Contents
 
-- **Warm Welcome & Greeting**  
-  Initiates every interaction with a courteous greeting to build trust and understand patient needs.
+Features
 
-- **Hospital Navigation & Wayfinding**  
-  Offers step-by-step directions to departments, clinics, and key facilities, minimizing confusion.
+Demo
 
-- **Appointment Scheduling & Management**  
-  Assists patients in booking, rescheduling, and canceling appointments with intuitive prompts.
+Prerequisites
 
-- **Emergency Response Guidance**  
-  Detects critical keywords (e.g., chest pain, severe bleeding, difficulty breathing) and immediately advises patients to contact emergency services or proceed to the Emergency Department.
+Installation
 
-- **Information & FAQs**  
-  Answers common questions regarding operating hours, physician availability, visiting policies, and more—using clear, accessible language.
+Configuration
 
-- **Respectful & Inclusive Communication**  
-  Utilizes neutral, non-judgmental language and demonstrates cultural sensitivity to ensure accessibility for all patients.
+Running the Application
 
-## Persona & Character Traits
+Project Structure
 
-| Trait                        | Description                                                                                   |
-| ---------------------------- | --------------------------------------------------------------------------------------------- |
-| **Warm & Welcoming**         | Engages patients with empathy and friendliness to foster a comforting environment.            |
-| **Professional & Clear**     | Communicates information precisely and concisely, avoiding jargon.                           |
-| **Patient & Composed**       | Remains calm and patient, even when questions are repeated or unclear.                        |
-| **Resourceful & Supportive** | Proactively offers assistance, solutions, and relevant resources.                            |
-| **Respectful & Neutral**     | Maintains neutrality, avoiding judgmental or emotionally charged expressions.                 |
-| **Culturally Sensitive**     | Respects diverse backgrounds and communication preferences, avoiding slang or colloquialisms. |
+API & Webhook Endpoints
 
-## Tone & Style Guidelines
+Available Routes
 
-- **Default**: Friendly, reassuring, and professional.  
-  *Example*: “Hello and welcome to [Hospital Name]. I’m Receptra, your virtual assistant. How may I assist you today?”
+Contributing
 
-- **Elderly Patients**: Speak slowly, use polite and slightly formal language.  
-  *Example*: “Certainly. I’m here to help. Could you please describe your symptoms in more detail?”
+License
 
-- **Emergency Situations**: Deliver urgent instructions clearly and promptly.  
-  *Example*: “If you are experiencing chest pain, severe bleeding, or difficulty breathing, please call emergency services or go to the Emergency Department immediately.”
+Acknowledgements
 
-- **Confused or Anxious Patients**: Provide reassurance and step-by-step guidance.  
-  *Example*: “I’m here to support you. Let’s take it one step at a time. Can you tell me what you’re looking for?”
+✨ Features
 
-## Installation & Setup
+Warm Welcome & Greeting: Builds rapport by greeting patients and capturing initial context.
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd receptra
-   ```
+Hospital Navigation & Wayfinding: Provides step-by-step directions to departments and services.
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+Appointment Management: Enables booking, rescheduling, and cancellations via simple commands.
 
-3. **Configure environment variables**  
-   Create a `.env` file with the following keys:
-   - `API_SECRET_KEY`
-   - `BROKER_ID`
-   - `WEBHOOK_URL`
-   - `VERIFY_TOKEN`
+Emergency Response Guidance: Detects critical phrases (e.g., chest pain) and prompts immediate emergency protocols.
 
-4. **Run the application**
-   ```bash
-   python app.py
-   ```
+Information & FAQs: Answers common queries about hours, physicians, and policies.
 
-5. **Access the interface**  
-   Open your browser to `http://localhost:3000` or load `index.html` for the chat interface.
+Inclusive Communication: Ensures culturally sensitive and accessible dialogue.
 
-## Project Structure
+🎬 Demo
 
-```
-receptra/
-├── app.py             # Flask server handling AI interactions
-├── index.html         # Front-end chat interface
-├── test.py            # Test script for API messaging
-├── requirements.txt   # Python dependencies
-└── README.md          # Project documentation
-```
+Coming soon: Link to live demo or screencast.
 
-## Contributing
+🔧 Prerequisites
 
-We welcome contributions, bug reports, and feature requests. To contribute:
+Python: 3.9 or higher
 
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature-name`
-3. Commit your changes: `git commit -m "Add feature description"`
-4. Push your branch: `git push origin feature-name`
-5. Open a Pull Request and follow the contribution guidelines.
+Virtual Environment (optional but recommended): venv or virtualenv
 
----
+🚀 Installation
+
+Clone repository
+
+git clone <repository-url>
+cd Receptra
+
+Create & activate virtual environment
+
+python -m venv .venv
+source .venv/bin/activate    # Linux/macOS
+.\.venv\Scripts\activate   # Windows
+
+Install dependencies
+
+pip install -r requirements.txt
+
+⚙️ Configuration
+
+Copy example environment file:
+
+cp .env.example .env
+
+Open .env and populate:
+
+FPT_WEBHOOK_SECRET=your_webhook_secret
+FPT_APP_TOKEN=your_app_token
+FPT_WEBHOOK_URL=your_webhook_url
+FPT_VERIFY_TOKEN=your_verify_token
+FPT_BROKER_ID=your_broker_id
+FPT_APP_CODE=your_app_code
+FPT_TENANT_ID=your_tenant_id
+
+▶️ Running the Application
+
+Start the server:
+
+python app.py
+
+Visit http://localhost:3000/homepage in your browser.
+
+🗂️ Project Structure
+
+Receptra/
+├── app.py               # Main Flask server
+├── requirements.txt     # Dependency list
+├── .env.example         # Sample environment variables
+├── static/              # Static assets
+│   ├── css/             # Stylesheets
+│   └── img/             # Logo & backgrounds
+└── templates/           # Jinja2 templates
+    ├── homepage.html    # Landing page
+    ├── chatbot.html     # Chat UI
+    ├── services.html    # Services overview
+    ├── about.html       # About page
+    └── ourteam.html     # Team page
+
+🔗 API & Webhook Endpoints
+
+Method
+
+Endpoint
+
+Description
+
+POST
+
+/chat-api
+
+Forward user messages with HMAC verification
+
+GET
+
+/indirect-channels/webhook/api
+
+Verify webhook challenges
+
+POST
+
+/indirect-channels/webhook/api
+
+Receive & process FPT webhook callbacks
+
+GET
+
+/latest-reply
+
+Fetch the latest bot response from webhook storage
+
+🌐 Available Routes
+
+/homepage  — Landing page
+
+/chat      — Chat interface
+
+/services  — List of hospital services
+
+/about     — Project background
+
+/ourteam   — Team member details
+
+🤝 Contributing
+
+We welcome contributions! Please follow:
+
+Fork the repo
+
+Create branch feature/YourFeature
+
+Commit changes: git commit -m "Add feature"
+
+Push & open a PR
+
+Refer to CONTRIBUTING.md for guidelines.
+
+📜 License
 
 © 2025 Receptra Team. All rights reserved.
+
+🙏 Acknowledgements
+
+Built with Flask
+
+Powered by FPT AI services
