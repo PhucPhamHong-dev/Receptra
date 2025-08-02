@@ -66,7 +66,8 @@ def chat():
     except Exception:
         logging.exception("[ERROR] Failed to call FPT AI webhook")
         return jsonify({"error": "Unable to connect to FPT AI"}), 500
-
+    global last_bot_reply
+    last_bot_reply = {"reply": ""}
     return jsonify({"reply": "Message sent, awaiting reply at webhook"}), 200
 
 @app.route("/indirect-channels/webhook/api", methods=["GET"])
