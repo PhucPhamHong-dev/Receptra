@@ -1,98 +1,79 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <!-- Favicon for browser tab -->
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}" />
-  <!-- Ensure responsive layout on mobile devices -->
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RECEPTRA</title>
-  <!-- TailwindCSS CDN for utility-first styling -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Make html and body fill full height, remove default margin */
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-
-    /* Enable natural line breaks in bot messages */
-    .bot-message {
-      white-space: pre-line;
-    }
-
-    /* Header styling: base background color and relative positioning for pseudo-elements */
+    html, body { height: 100%; margin: 0; }
+    .bot-message { white-space: pre-line; }
     header {
-      position: relative;
-      overflow: hidden;
-      /* Diagonal gradient strip from top-left to bottom-right */
+      background: none;
       background-image: linear-gradient(
         45deg,
-        rgb(153, 217, 234) 0%,
-        rgb(153, 217, 234) 60%,
-        rgb(147, 209, 224) 60%,
-        rgb(147, 209, 224) 70%,
-        rgb(98, 140, 150) 70%,
-        rgb(98, 140, 150) 80%,
-        rgb(48, 69, 74) 80%,
-        rgb(48, 69, 74) 100%
+        rgb(153, 217, 234) 0%,   rgb(153, 217, 234) 60%,
+        rgb(147, 209, 224) 60%,  rgb(147, 209, 224) 70%,
+        rgb(98, 140, 150)  70%,  rgb(98, 140, 150)  80%,
+        rgb(48, 69, 74)    80%,  rgb(48, 69, 74)   100%
       );
+    }
+    .typing-bubble { justify-content: flex-start; }
+    .dot {
+      width: 8px; height: 8px;
+      background-color: #999;
+      border-radius: 50%;
+      display: inline-block;
+      animation: blink 1.4s infinite both;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
     }
   </style>
 </head>
 <body class="flex flex-col h-full bg-gray-100">
-  <!-- Main container: white background, rounded corners, shadow -->
+
   <div class="flex flex-col flex-1 bg-white shadow-lg rounded-lg overflow-hidden">
-    <!-- Top bar with logo and title -->
-    <header class="flex items-center justify-start px-6 py-4">
-      <img
-        src="{{ url_for('static', filename='img/logo.png') }}"
-        alt="Logo Receptra"
-        class="h-10 w-10 rounded-full mr-3"
-      />
+
+    <header class="flex items-center px-6 py-4">
+      <img src="{{ url_for('static', filename='img/logo.png') }}"
+           alt="Logo Receptra"
+           class="h-10 w-10 rounded-full mr-3"/>
       <span class="text-white text-2xl font-bold">RECEPTRA</span>
     </header>
 
-    <!-- Chat area: scrollable content -->
-    <main id="chat-window" class="flex-1 p-4 overflow-y-auto bg-[rgb(255,255,244)] space-y-4">
-      <!-- Initial welcome message and quick-pick prompts -->
-      <div id="initial-wrapper" class="w-fit bg-white p-4 rounded-lg shadow space-y-4 mx-4">
+    <main id="chat-window"
+          class="flex-1 p-4 overflow-y-auto bg-[rgb(255,255,244)] space-y-4">
+
+      <div id="initial-wrapper"
+           class="w-fit bg-white p-4 rounded-lg shadow space-y-4 mx-4">
         <div class="space-y-2 text-left">
           <div class="inline-block bg-gray-100 px-4 py-2 rounded-lg">
-            Xin chào! Tôi là Receptra, lễ tân ảo &amp; hướng dẫn viên cho bệnh nhân Bệnh viện Bạch Mai.<br>
+            Xin chào! Tôi là Receptra, lễ tân ảo & hướng dẫn viên cho bệnh nhân Bệnh viện Bạch Mai.<br>
             Tôi có thể giúp gì cho bạn hôm nay?
           </div>
         </div>
         <div class="flex flex-col gap-2">
-          <!-- Prompt button: fills input when clicked -->
-          <button
-            class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
-            data-prompt="Tôi cần làm thủ tục BHYT, cần chuẩn bị gì?"
-          >
+          <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                  data-prompt="Tôi cần làm thủ tục BHYT, cần chuẩn bị gì?">
             Tôi cần làm thủ tục BHYT, cần chuẩn bị gì?
           </button>
-          <button
-            class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
-            data-prompt="Tôi choáng váng và muốn ngất, tôi phải làm sao?"
-          >
+          <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                  data-prompt="Tôi choáng váng và muốn ngất, tôi phải làm sao?">
             Tôi choáng váng và muốn ngất, tôi phải làm sao?
           </button>
-          <button
-            class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
-            data-prompt="Tôi bị đau đầu thường xuyên, xin cho biết tôi nên đến khoa nào?"
-          >
+          <button class="prompt-card px-4 py-2 bg-white border text-blue-600 rounded-lg text-left hover:bg-gray-50"
+                  data-prompt="Tôi bị đau đầu thường xuyên, xin cho biết tôi nên đến khoa nào?">
             Tôi bị đau đầu thường xuyên, xin cho biết tôi nên đến khoa nào?
           </button>
         </div>
       </div>
+
     </main>
 
-    <!-- Hidden typing indicator, shown while waiting for bot response -->
-    <div id="typing-indicator" class="px-4 py-2 text-gray-500 italic hidden">
-      Bot is typing...
-    </div>
-
-    <!-- User input area at bottom -->
     <footer class="p-4 bg-[rgb(153,217,234)]">
       <div class="flex items-center gap-2">
         <input
@@ -109,53 +90,63 @@
         </button>
       </div>
     </footer>
+
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const chatWindow = document.getElementById('chat-window');
-      const typingEl = document.getElementById('typing-indicator');
-      const inputEl = document.getElementById('user-input');
-      const sendBtn = document.getElementById('send-btn');
-      const initWrap = document.getElementById('initial-wrapper');
+      const inputEl    = document.getElementById('user-input');
+      const sendBtn    = document.getElementById('send-btn');
+      const initWrap   = document.getElementById('initial-wrapper');
 
-      // Append a user message bubble on the right
+      const typingTemplate = `
+        <div class="flex items-start space-x-2 typing-instance">
+          <img src="{{ url_for('static', filename='img/logo.png') }}"
+               alt="Bot"
+               class="h-6 w-6 rounded-full mt-1"/>
+          <div class="typing-bubble bg-white px-4 py-2 rounded-lg shadow max-w-[60%] flex items-center">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>`;
+
       function appendUser(text) {
-        const container = document.createElement('div');
-        container.className = 'flex justify-end items-start space-x-2';
-        container.innerHTML = `
+        const c = document.createElement('div');
+        c.className = 'flex justify-end items-start space-x-2';
+        c.innerHTML = `
           <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg max-w-[40%]">
             ${text}
           </div>
-          <img
-            src="{{ url_for('static', filename='img/user.png') }}"
-            alt="User Avatar"
-            class="h-6 w-6 rounded-full mt-1"
-          />
-        `;
-        chatWindow.appendChild(container);
+          <img src="{{ url_for('static', filename='img/user.png') }}"
+               alt="Bạn"
+               class="h-6 w-6 rounded-full mt-1"/>`;
+        chatWindow.appendChild(c);
         chatWindow.scrollTop = chatWindow.scrollHeight;
       }
 
-      // Append a bot message bubble on the left
       function appendBot(text) {
-        const container = document.createElement('div');
-        container.className = 'flex items-start space-x-2';
-        container.innerHTML = `
-          <img
-            src="{{ url_for('static', filename='img/logo.png') }}"
-            alt="Bot Avatar"
-            class="h-6 w-6 rounded-full mt-1"
-          />
+        const c = document.createElement('div');
+        c.className = 'flex items-start space-x-2';
+        c.innerHTML = `
+          <img src="{{ url_for('static', filename='img/logo.png') }}"
+               alt="Bot"
+               class="h-6 w-6 rounded-full mt-1"/>
           <div class="bot-message bg-white px-4 py-2 rounded-lg shadow max-w-[60%]">
             ${text}
-          </div>
-        `;
-        chatWindow.appendChild(container);
+          </div>`;
+        chatWindow.appendChild(c);
         chatWindow.scrollTop = chatWindow.scrollHeight;
       }
 
-      // Set prompt buttons to load text into input field
+      function showTyping() {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = typingTemplate;
+        const animNode = wrapper.firstElementChild;
+        chatWindow.appendChild(animNode);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        return animNode;
+      }
+
       initWrap.querySelectorAll('.prompt-card').forEach(btn => {
         btn.addEventListener('click', () => {
           inputEl.value = btn.dataset.prompt;
@@ -163,52 +154,42 @@
         });
       });
 
-      // Send message to server and handle response
       async function sendMessage() {
         const text = inputEl.value.trim();
         if (!text) return;
-
-        // Remove initial prompt cards on first send
-        if (initWrap) {
-          initWrap.remove();
-        }
+        if (initWrap) initWrap.remove();
 
         appendUser(text);
+        const animNode = showTyping();
         inputEl.value = '';
-        typingEl.classList.remove('hidden');
 
         try {
-          // Send chat request
           await fetch('/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
           });
-
-          // Poll for the bot's reply
           let reply = '';
           while (!reply) {
-            const resp = await fetch('/latest-reply');
-            const data = await resp.json();
-            reply = (data.reply || '').trim();
+            const res = await fetch('/latest-reply');
+            reply = (await res.json()).reply.trim();
             if (!reply) await new Promise(r => setTimeout(r, 300));
           }
-
-          typingEl.classList.add('hidden');
+          animNode.remove();
           appendBot(reply);
-        } catch (err) {
-          typingEl.classList.add('hidden');
-          console.error(err);
-          appendBot('Sorry, there was an error sending your message. Please try again.');
+        } catch (e) {
+          animNode.remove();
+          appendBot('Xin lỗi, có lỗi rồi. Vui lòng thử lại.');
+          console.error(e);
         }
       }
 
-      // Trigger send on button click or Enter key
       sendBtn.addEventListener('click', sendMessage);
       inputEl.addEventListener('keyup', e => {
         if (e.key === 'Enter') sendMessage();
       });
     });
   </script>
+
 </body>
 </html>
